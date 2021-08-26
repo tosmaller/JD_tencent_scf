@@ -8,6 +8,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //惊喜APP的UA。领取助力任务奖励需要惊喜APP的UA,环境变量：JX_USER_AGENT，有能力的可以填上自己的UA
 const JXUserAgent =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``):``;
+const isBuy = false; // 是否购买白菜
 $.inviteCodeList = [];
 let cookiesArr = [];
 $.appId = 10028;
@@ -198,7 +199,7 @@ async function pasture() {
       }
       materialNumber = Number(materialinfoList[j].value);//白菜数量
     }
-    if (Number($.homeInfo.coins) > 5000) {
+    if (isBuy && Number($.homeInfo.coins) > 5000) {
       let canBuyTimes = Math.floor(Number($.homeInfo.coins) / 5000);
       console.log(`\n共有金币${$.homeInfo.coins},可以购买${canBuyTimes}次白菜`);
       if(Number(materialNumber) < 400){
@@ -221,8 +222,9 @@ async function pasture() {
         continue;
       }
       if (Number(materialinfoList[j].value) > 10) {
-        $.canFeedTimes = Math.floor(Number(materialinfoList[j].value) / 10);
-        console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${$.canFeedTimes}次`);
+        // const times = Math.floor(Number(materialinfoList[j].value) / 10);
+        $.canFeedTimes = isBuy ? Math.floor(Number(materialinfoList[j].value) / 10) : 1
+        console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${$.canFeedTimes}次${isBuy ? '' : '，当时我只喂1次~~'}`);
         $.runFeed = true;
         for (let k = 0; k < $.canFeedTimes && $.runFeed && k < 40; k++) {
           $.pause = false;

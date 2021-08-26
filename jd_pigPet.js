@@ -26,6 +26,7 @@ let cookiesArr = [], cookie = '', allMessage = '';
 const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 const MISSION_BASE_API = `https://ms.jr.jd.com/gw/generic/mission/h5/m`;
 const notify = $.isNode() ? require('./sendNotify') : '';
+const isEatFood = false; // 是否喂食物
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 if ($.isNode()) {
@@ -163,13 +164,18 @@ function pigPetUserBag() {
                   for (let item of data.resultData.resultData.goods) {
                     console.log(`${item.goodsName}      ${item.count}g`);
                   }
-                  for (let item of data.resultData.resultData.goods) {
-                    if (item.count >= 20) {
-                      console.log(`10秒后开始喂食${item.goodsName}，当前数量为${item.count}g`)
-                      await $.wait(10000);
-                      await pigPetAddFood(item.sku);
+                  if (isEatFood) {
+                    for (let item of data.resultData.resultData.goods) {
+                      if (item.count >= 20) {
+                        console.log(`10秒后开始喂食${item.goodsName}，当前数量为${item.count}g`)
+                        await $.wait(10000);
+                        await pigPetAddFood(item.sku);
+                      }
                     }
+                  } else {
+                    console.log('就是不喂食~')
                   }
+
                 } else {
                   console.log(`暂无食物`)
                 }

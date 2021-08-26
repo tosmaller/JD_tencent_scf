@@ -31,6 +31,7 @@ const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const isExchange = false; // 是否兑换积分
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -76,8 +77,13 @@ async function jdDailyEgg() {
   await toDailyHome()
   await $.wait(1000)
   await toWithdraw()
-  await $.wait(2000)
-  await toGoldExchange();
+  if (isExchange) {
+    await $.wait(2000)
+    await toGoldExchange();
+  } else {
+    console.log('我就是不兑换积分~~')
+  }
+
 }
 function toGoldExchange() {
   return new Promise(async resolve => {
